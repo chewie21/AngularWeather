@@ -1,0 +1,38 @@
+<div *ngIf="thisLoading; else weatherContent">
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<ng-template #weatherContent>
+  <div *ngIf="thisError; else weather">
+    <h1 class="lead">Статус ошибки: {{thisError.status}}</h1>
+    <h1 class="lead">Кажется, что-то пошло не так... Повторите попытку позже!</h1>
+  </div>
+  <ng-template #weather></ng-template>
+  <div *ngIf="thisWeather; else error">
+    <div class="row justify-content-center pb-4 m-0">
+      <h1 class="lead title">{{thisWeatherData.name}}</h1>
+      <img class="weather-icon" src="http://openweathermap.org/img/w/{{thisWeather.icon}}.png">
+    </div>
+    <div class="row justify-content-center">
+      <h1 class="lead second">{{thisWeather.description | string}}</h1>
+    </div>
+    <ul class="list-group list-group-flush weather-list">
+      <li class="list-group-item">Температура: {{thisWeatherData.main.temp | degrees}}°</li>
+      <li class="list-group-item">Ощущается: {{thisWeatherData.main.feels_like | degrees}}°</li>
+      <li class="list-group-item">Атмосферное давление: {{this.thisWeatherData.main.pressure | pressure}}  мм.рт.ст</li>
+      <li class="list-group-item">Влажность: {{thisWeatherData.main.humidity}} %</li>
+      <li class="list-group-item">Скорость ветра: {{thisWeatherData.wind.speed}} м/с</li>
+      <li class="list-group-item" *ngIf="thisWeatherData.rain">Количество осадков: {{thisWeatherData.rain['1h']}} мм</li>
+      <li class="list-group-item" *ngIf="thisWeatherData.snow">Количество осадков: {{thisWeatherData.snow['1h']}} мм</li>
+      <li class="list-group-item" *ngIf="thisWeatherData.clouds">Облачность: {{thisWeatherData.clouds['all']}} %</li>
+    </ul>
+  </div>
+  <ng-template #error></ng-template>
+</ng-template>
+
+
+
+

@@ -1,0 +1,48 @@
+@import '~font-awesome/css/font-awesome.css';
+
+.alert {
+  position: absolute;
+  width: 100%;
+  z-index: 9999;
+}
+
+.active-li {
+  border: 1px solid #007bff !important;
+}
+
+.close-icon {
+  display: none;
+  float: right;
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+  align-items: center;
+}
+.modal-li:hover {
+  border: 1px solid #007bff;
+}
+.city-li {
+  border: 1px solid #fff;
+}
+.city-li:hover {
+  border: 1px solid #007bff;
+}
+.city-li:hover .close-icon {
+  display: flex;
+}
+.city-li:hover .weather-icon {
+  display: none;
+}
+
+.title {
+  font-size: 30px;
+}
+.second-title {
+  font-size: 20px;
+}
+
+.weather-icon {
+  float: right;
+  height: 30px;
+  width: 30px;
+}
