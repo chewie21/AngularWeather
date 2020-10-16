@@ -27,9 +27,9 @@ import {PressurePipe} from './pipes/pressure.pipe';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   providers: [WeatherService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

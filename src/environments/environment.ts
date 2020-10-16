@@ -7,7 +7,7 @@ import {Environment} from './interface';
 export const environment: Environment = {
   production: false,
   apiKey: 'cfc89786c6705ea8a7b2ba2590107043',
-  apiUrl: `http://api.openweathermap.org`
+  apiUrl: `https://api.openweathermap.org`
 };
 
 /*

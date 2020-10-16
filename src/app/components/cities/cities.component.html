@@ -1,6 +1,7 @@
 <div *ngIf="thisCitiesFromLocal.length; else citiesList" class="pb-4">
-  <ul class="list-group" *ngFor="let city of thisCitiesFromLocal">
+  <ul class="list-group city-ul">
     <li type="button" class="list-group-item city-li shadow m-1"
+        *ngFor="let city of thisCitiesFromLocal"
        [ngClass]="city.active ? 'active-li' : ''"
        (click)="getWeather(city)">
         {{city.name}}
@@ -23,26 +24,36 @@
       <div *ngIf="error" class="alert alert-danger">
         Этот город уже добавлен!
       </div>
-      <div class="modal-body">
-        <div *ngIf="thisLoading; else cityContent">
+      <div *ngIf="thisLoading; else cityContent">
+        <div class="modal-body">
           <div class="d-flex justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
               <span class="sr-only">Loading...</span>
             </div>
           </div>
         </div>
-        <ng-template #cityContent>
+      </div>
+      <ng-template #cityContent>
+        <div class="modal-body">
           <div *ngIf="thisLoadingError; else city">
             <h1 class="lead">Статус ошибки: {{thisLoadingError.status}}</h1>
             <h1 class="lead">Кажется, что-то пошло не так... Повторите попытку позже!</h1>
           </div>
-          <ng-template #city>
+        </div>
+        <ng-template #city>
+          <div class="modal-header">
+            <h5 class="modal-title">Список городов:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
             <div class="list-group" *ngFor="let city of thisCitiesFromJson">
               <a href="#" class="list-group-item list-group-item-action my-1 modal-li" (click)="setCity(city)">{{city.name}}</a>
             </div>
-          </ng-template>
+          </div>
         </ng-template>
+      </ng-template>
       </div>
     </div>
-  </div>
 </div>

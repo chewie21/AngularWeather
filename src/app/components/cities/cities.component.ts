@@ -30,6 +30,7 @@ export class CitiesComponent implements OnInit {
     private weatherService: WeatherService,
     private citiesService: CitiesService
     ) {
+    // Отслеживаем переменные приходящие с сервисов
     this.citiesService.citiesFromLocal.subscribe((cities) => {
       this.thisCitiesFromLocal = cities;
     });
@@ -67,6 +68,7 @@ export class CitiesComponent implements OnInit {
 
   // tslint:disable-next-line:typedef
   getWeather(city) {
+    // Получение данных о погоде
     this.thisCitiesFromLocal.forEach((item) => {
       item.active = item.id === city.id;
     });
@@ -76,7 +78,9 @@ export class CitiesComponent implements OnInit {
 
   // tslint:disable-next-line:typedef
   setCity(city) {
+    // Добавление города в "быстрый" доступ
     if (!this.thisCitiesId.has(city.id)) {
+      // Проверяем наличие иконки погожы
       this.citiesService.getWeatherIcon(city).toPromise()
         .then((response) => {
           // @ts-ignore
@@ -96,6 +100,7 @@ export class CitiesComponent implements OnInit {
           }
         });
     } else {
+      // Если ошибка - показываем и скрываем алерт
       this.error = true;
       setTimeout(() => this.error = false, 1500);
     }
@@ -103,7 +108,7 @@ export class CitiesComponent implements OnInit {
 
   // tslint:disable-next-line:typedef
   deleteCity(event, city) {
-    event.preventDefault();
+    // Удаление из быстрого доступа
     event.stopPropagation();
     this.citiesService.deleteCity(city, this.thisCitiesFromLocal);
     if (this.thisCitiesFromLocal.length) {
