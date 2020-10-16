@@ -49,7 +49,7 @@
           </div>
           <div class="modal-body">
             <div class="list-group" *ngFor="let city of thisCitiesFromJson">
-              <a href="#" class="list-group-item list-group-item-action my-1 modal-li" (click)="setCity(city)">{{city.name}}</a>
+              <li type="button" class="list-group-item list-group-item-action my-1 modal-li" (click)="setCity(city)">{{city.name}}</li>
             </div>
           </div>
         </ng-template>
