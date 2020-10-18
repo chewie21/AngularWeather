@@ -75,7 +75,6 @@ export class MainService {
       this.idsFromLocalArr = new Array<number>();
     }
     if (this.idsFromLocalArr.length) {
-      console.log(this.idsFromLocalArr);
       // Получаем id последнего активного города
       this.getActiveCity();
       // Для каждого id создаем переменную типа cityInterface и записываем ее в массив
