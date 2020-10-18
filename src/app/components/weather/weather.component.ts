@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {WeatherService} from '../../services/weather.service';
-import {getLocaleDateFormat} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {MainService} from '../../services/main.service';
 
 @Component({
   selector: 'app-weather',
@@ -9,34 +8,13 @@ import {getLocaleDateFormat} from '@angular/common';
 })
 export class WeatherComponent implements OnInit{
 
-  thisLoading = false;
-  thisError;
+  weather;
 
-  thisWeather;
-  thisWeatherData;
-
-  constructor(private weatherService: WeatherService) {
+  constructor(private mainService: MainService) {
     // Начало загрузки
-    this.weatherService.loadingWeather.subscribe((loading) => {
-      this.thisLoading = loading;
+    this.mainService.weatherInThisCiti.subscribe((weather) => {
+      this.weather = weather;
     });
-    // Смотрим на наличие ошибок
-    this.weatherService.loadingWeatherError.subscribe((error) => {
-      this.thisError = error;
-    });
-    // Если нет ошибок
-    if (!this.thisError) {
-      this.weatherService.weatherInThisCiti.subscribe((weather) => {
-        // Получаем ответ - если есть ответ - записываем
-        if (weather) {
-          this.thisWeatherData = weather;
-          // Получаем конкретный объект
-          this.thisWeather = this.thisWeatherData.weather[0];
-        } else {
-          this.thisWeather = null;
-        }
-      });
-    }
   }
 
   ngOnInit(): void {

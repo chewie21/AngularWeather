@@ -1,59 +1,62 @@
-<div *ngIf="thisCitiesFromLocal.length; else citiesList" class="pb-4">
-  <ul class="list-group city-ul">
-    <li type="button" class="list-group-item city-li shadow m-1"
-        *ngFor="let city of thisCitiesFromLocal"
-       [ngClass]="city.active ? 'active-li' : ''"
-       (click)="getWeather(city)">
-        {{city.name}}
-      <fa-icon [icon]="faTime" (click)="deleteCity($event, city)" class="close-icon"></fa-icon>
-      <img *ngIf="!!city.icon" class="weather-icon" src="http://openweathermap.org/img/w/{{city.icon}}.png">
-    </li>
-  </ul>
+<div *ngIf="citiesFromLocalLoading; else titleCity">
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
 </div>
-<ng-template #citiesList>
-  <h1 class="lead second-title py-4">Добавте сюда интересующие вас города...</h1>
+<ng-template #titleCity>
+  <div *ngIf="citiesFromLocal.length; else cityList" class="pb-4">
+    <ul class="list-group city-ul">
+      <div *ngFor="let city of citiesFromLocal" class="rounded">
+        <li type="button" class="list-group-item city-li m-1"
+            *ngIf="city.active"
+            [ngClass]="activeCity === city.id ? 'active-li' : ''"
+            (click)="getWeather(city)">
+          {{city.name}}
+          <fa-icon [icon]="faTime" (click)="deleteCity($event, city)" class="close-icon"></fa-icon>
+          <img class="weather-icon" src="http://openweathermap.org/img/w/{{city.weather.weather.icon}}.png">
+        </li>
+      </div>
+    </ul>
+  </div>
+  <ng-template #cityList>
+    <h1 class="lead second-title py-4">Добавте сюда интересующие вас города...</h1>
+  </ng-template>
+  <div *ngIf="buttonActive">
+    <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal">Добавить</button>
+  </div>
 </ng-template>
 
-<div *ngIf="buttonDisplay">
-  <button  type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal">Добавить</button>
-</div>
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div *ngIf="error" class="alert alert-danger">
+      <div *ngIf="modalError" class="alert alert-danger">
         Этот город уже добавлен!
       </div>
-      <div *ngIf="thisLoading; else cityContent">
-        <div class="modal-body">
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Список городов:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <ng-template #cityContent>
-        <div class="modal-body">
-          <div *ngIf="thisLoadingError; else city">
-            <h1 class="lead">Статус ошибки: {{thisLoadingError.status}}</h1>
-            <h1 class="lead">Кажется, что-то пошло не так... Повторите попытку позже!</h1>
-          </div>
-        </div>
-        <ng-template #city>
-          <div class="modal-header">
-            <h5 class="modal-title">Список городов:</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="list-group" *ngFor="let city of thisCitiesFromJson">
-              <li type="button" class="list-group-item list-group-item-action my-1 modal-li" (click)="setCity(city)">{{city.name}}</li>
+      <div class="modal-body">
+        <ul class="list-group">
+          <div *ngIf="!citiesFromJsonLoading; else loading">
+            <div *ngFor="let city of citiesFromJson;" class="rounded">
+              <li *ngIf="city.active" type="button" class="list-group-item list-group-item-action my-1 modal-li" (click)="addCity(city)">{{city.name}}</li>
             </div>
           </div>
-        </ng-template>
-      </ng-template>
+          <ng-template #loading>
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </ng-template>
+        </ul>
       </div>
     </div>
+  </div>
 </div>

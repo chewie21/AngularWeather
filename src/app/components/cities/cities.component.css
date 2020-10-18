@@ -23,6 +23,7 @@
 }
 .city-li {
   border: 1px solid #fff;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
 .city-li:hover {
   border: 1px solid #007bff;
@@ -52,4 +53,15 @@
     display: flex;
     float: left;
   }
+  .city-li:hover .close-icon {
+    display: flex;
+  }
+  .city-li:hover .weather-icon {
+    display: flex;
+  }
+  .city-li {
+    box-shadow: none;
+    border: 1px solid grey;
+  }
+
 }

@@ -1,123 +1,101 @@
 import {Component, OnInit} from '@angular/core';
-import {WeatherService} from '../../services/weather.service';
-import {CitiesService} from '../../services/cities.service';
+import {MainService} from '../../services/main.service';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
+import {CityInterface} from '../../interfaces/city.interface';
 
 declare var $: any;
 
 @Component({
   selector: 'app-cities',
   templateUrl: './cities.component.html',
-  styleUrls: ['./cities.component.css'],
-  providers: [CitiesService]
+  styleUrls: ['./cities.component.css']
 })
 export class CitiesComponent implements OnInit {
 
   // Иконка закрытия
   faTime = faTimes;
-  // Ошибка при добавлении города
-  error;
-  // Показать кнопку
-  buttonDisplay = false;
 
-  thisCitiesFromJson;
-  thisCitiesFromLocal;
-  thisCitiesId;
-  thisLoading;
-  thisLoadingError;
+  // Города из json-файла
+  citiesFromJson: CityInterface[];
+  citiesFromJsonLoading: boolean;
+  citiesFromJsonError: object;
+
+  // Города из localStorage
+  citiesFromLocal: CityInterface[];
+  citiesFromLocalLoading: boolean;
+  citiesFromLocalError: object;
+
+  idsFromLocal: Array<number>;
+
+  // Показывать ли кнопку
+  buttonActive = false;
+  // Ошибка в модальном окне
+  modalError = false;
+  // Активный город
+  activeCity;
 
   constructor(
-    private weatherService: WeatherService,
-    private citiesService: CitiesService
+    private mainService: MainService
     ) {
-    // Отслеживаем переменные приходящие с сервисов
-    this.citiesService.citiesFromLocal.subscribe((cities) => {
-      this.thisCitiesFromLocal = cities;
+    this.mainService.citiesFromJson.subscribe((cities) => {
+      this.citiesFromJson = cities;
+      if (this.citiesFromJson.length === this.idsFromLocal.length) {
+        this.buttonActive = false;
+      }
     });
-    this.citiesService.citiesId.subscribe((id) => {
-      this.thisCitiesId = id;
+    this.mainService.citiesFromJsonLoading.subscribe((loading) => {
+      this.citiesFromJsonLoading = loading;
     });
-    this.citiesService.loadingCities.subscribe((loading) => {
-      this.thisLoading = loading;
+    this.mainService.citiesFromLocal.subscribe((cities) => {
+      this.citiesFromLocal = cities;
     });
-    this.citiesService.loadingCitiesError.subscribe((error) => {
-      this.thisLoadingError = error;
+    this.mainService.citiesFromLocalLoading.subscribe((loading) => {
+      this.citiesFromLocalLoading = loading;
     });
-    if (!this.thisLoadingError) {
-      this.citiesService.citiesFromJson.subscribe((cities) => {
-        this.thisCitiesFromJson = cities;
-        if (this.thisCitiesFromLocal.length !== this.thisCitiesFromJson.length) {
-          this.buttonDisplay = true;
-        }
-      });
-    }
+    this.mainService.idsFromLocal.subscribe((arr) => {
+      this.idsFromLocal = arr;
+    });
+    this.mainService.activeCity.subscribe((city) => {
+      this.activeCity = city;
+    });
+    this.mainService.buttonActive.subscribe((active) => {
+      this.buttonActive = active;
+    });
   }
 
   ngOnInit(): void {
-    this.citiesService.getCitiesFromJson();
-    this.citiesService.getCitiesFromLocal();
-    if (this.thisCitiesFromLocal) {
-      this.thisCitiesFromLocal.forEach((item) => {
-        if (item.active) {
-          this.getWeather(item);
-          return;
-        }
-      });
-    }
+    this.mainService.getCitiesFromJson();
+    this.mainService.getCitiesFromLocal();
   }
 
+  // Вывод погоды
   // tslint:disable-next-line:typedef
   getWeather(city) {
-    // Получение данных о погоде
-    this.thisCitiesFromLocal.forEach((item) => {
-      item.active = item.id === city.id;
-    });
-    this.citiesService.setCities(this.thisCitiesFromLocal);
-    this.weatherService.getWeather(city.id);
+    this.mainService.getWeather(city);
   }
 
-  // tslint:disable-next-line:typedef
-  setCity(city) {
-    // Добавление города в "быстрый" доступ
-    if (!this.thisCitiesId.has(city.id)) {
-      // Проверяем наличие иконки погожы
-      this.citiesService.getWeatherIcon(city).toPromise()
-        .then((response) => {
-          // @ts-ignore
-          city.icon = response.weather[0].icon;
-        }).catch(() => city.icon = null)
-        .finally(() => {
-          // Добавляем город в массив и в сторадж и обновляем сет с id
-          this.thisCitiesFromLocal.push(city);
-          this.citiesService.setCities(this.thisCitiesFromLocal);
-          // Закрываем модалку и ошибку
-          this.error = false;
-          $(`#modal`).modal(`hide`);
-          // Получаем данные о погоде
-          this.getWeather(city);
-          if (this.thisCitiesFromLocal.length === this.thisCitiesFromJson.length) {
-            this.buttonDisplay = false;
-          }
-        });
-    } else {
-      // Если ошибка - показываем и скрываем алерт
-      this.error = true;
-      setTimeout(() => this.error = false, 1500);
-    }
-  }
-
+  // Удаление города из быстрой панели
   // tslint:disable-next-line:typedef
   deleteCity(event, city) {
-    // Удаление из быстрого доступа
+    // Отменяем всплытие
     event.stopPropagation();
-    this.citiesService.deleteCity(city, this.thisCitiesFromLocal);
-    if (this.thisCitiesFromLocal.length) {
-      this.getWeather(this.thisCitiesFromLocal[0]);
-    } else  {
-      this.weatherService.removeWeather();
-    }
-    if (this.thisCitiesFromLocal.length < this.thisCitiesFromJson.length) {
-      this.buttonDisplay = true;
+    this.mainService.deleteCityFromLocal(city);
+  }
+
+  // Добавление города в быструю панель
+  // tslint:disable-next-line:typedef
+  addCity(city) {
+    if (this.idsFromLocal) {
+      if (this.idsFromLocal.indexOf(city.id) === -1) {
+        $(`#modal`).modal(`hide`);
+        this.mainService.addCityToLocal(city);
+      } else {
+        this.modalError = true;
+        setTimeout(() => this.modalError = false, 1500);
+      }
+    } else {
+      $(`#modal`).modal(`hide`);
+      this.mainService.addCityToLocal(city);
     }
   }
 }
