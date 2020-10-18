@@ -1,0 +1,72 @@
+[
+  {
+    "id": 499099,
+    "name": "Samara",
+    "state": "",
+    "country": "RU",
+    "coord": {
+      "lon": 50.150002,
+      "lat": 53.200001
+    }
+  },
+  {
+    "id": 524894,
+    "name": "Moscow",
+    "state": "",
+    "country": "RU",
+    "coord": {
+      "lon": 37.606667,
+      "lat": 55.761665
+    }
+  },
+  {
+    "id": 2643743,
+    "name": "London",
+    "state": "",
+    "country": "GB",
+    "coord": {
+      "lon": -0.12574,
+      "lat": 51.50853
+    }
+  },
+  {
+    "id": 1497337,
+    "name": "Norilsk",
+    "state": "",
+    "country": "RU",
+    "coord": {
+      "lon": 88.202698,
+      "lat": 69.3535
+    }
+  },
+  {
+    "id": 3128760,
+    "name": "Barcelona",
+    "state": "",
+    "country": "ES",
+    "coord": {
+      "lon": 2.15899,
+      "lat": 41.38879
+    }
+  },
+  {
+    "id": 2013364,
+    "name": "Vladimir",
+    "state": "",
+    "country": "RU",
+    "coord": {
+      "lon": 102.654701,
+      "lat": 53.471401
+    }
+  },
+  {
+    "id": 2013348,
+    "name": "Vladivostok",
+    "state": "",
+    "country": "RU",
+    "coord": {
+      "lon": 131.873535,
+      "lat": 43.105621
+    }
+  }
+]
